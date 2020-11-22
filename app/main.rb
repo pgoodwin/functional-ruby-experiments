@@ -8,17 +8,16 @@ SemanticLogger.add_appender(io: $stdout, level: :info, formatter: :color)
 class LoggableClass
   include SemanticLogger::Loggable
 
-  def self.send_log
-    logger.info "class method log"
+  def self.send_log(message)
+    logger.tagged(method_type: :class)
+    logger.info message
   end
 
-  def send_log
-    logger.info "instance method log"
+  def send_log(message)
+    logger.tagged(method_type: :instance)
+    logger.info message
   end
 end
 
-logger = SemanticLogger["main"]
-logger.info "begin"
-
-LoggableClass.send_log
-LoggableClass.new.send_log
+LoggableClass.send_log :hi
+LoggableClass.new.send_log :mom
