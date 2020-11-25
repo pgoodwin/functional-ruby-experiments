@@ -23,13 +23,20 @@ def pokey
   "done slowly"
 end
 
+def with_measure_logging(name, &block)
+  -> {
+    SemanticLogger[name].measure_info("calling", &block)
+  }
+end
+
+def create_measured_task(name, &block)
+  ::Dry::Monads::Task[:io, &with_measure_logging(name, &block)]
+end
 
 # main script
 
-logged_speedy = -> { SemanticLogger["speedy"].measure_info("calling") { speedy } }
-speedy_task = ::Dry::Monads::Task[:io, &logged_speedy]
-logged_pokey = -> { SemanticLogger["pokey"].measure_info("calling") { pokey } }
-pokey_task = ::Dry::Monads::Task[:io, &logged_pokey]
+speedy_task = create_measured_task("speedy") { speedy }
+pokey_task = create_measured_task("pokey") { pokey }
 
 SemanticLogger["main"].measure_info "Calling tasks" do
   result = pokey_task.bind { |p|
