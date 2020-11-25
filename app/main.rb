@@ -26,9 +26,9 @@ end
 
 # main script
 
-logged_speedy = -> { SemanticLogger["speedy"].measure_info "calling" do speedy end }
+logged_speedy = -> { SemanticLogger["speedy"].measure_info("calling") { speedy } }
 speedy_task = ::Dry::Monads::Task[:io, &logged_speedy]
-logged_pokey = -> { SemanticLogger["pokey"].measure_info "calling" do pokey end }
+logged_pokey = -> { SemanticLogger["pokey"].measure_info("calling") { pokey } }
 pokey_task = ::Dry::Monads::Task[:io, &logged_pokey]
 
 SemanticLogger["main"].measure_info "Calling tasks" do
@@ -40,7 +40,7 @@ SemanticLogger["main"].measure_info "Calling tasks" do
     }
   }
 
-  puts result.value!
+  puts result.value!.inspect
 end
 
 
